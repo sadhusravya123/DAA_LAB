@@ -1,0 +1,43 @@
+from collections import defaultdict
+def biconnected_components(V, edges):
+    graph = defaultdict(list)
+    for u,v in edges:
+        graph[u].append(v)
+        graph[v].append(u)
+
+    disc, low = [-1]*V, [-1]*V
+    st, ap, bcc = [], set(), []
+    time = 0
+    def dfs(u, parent):
+        nonlocal time
+        disc[u] = low[u] = time
+        time += 1
+        children = 0
+        for v in graph[u]:
+            if disc[v] == -1:
+                children += 1
+                st.append((u,v))
+                dfs(v,u)
+                low[u] = min(low[u], low[v])
+                if (parent==-1 and children>1) or (parent!=-1 and low[v]>=disc[u]):
+                    ap.add(u)
+                    comp = []
+                    while st[-1] != (u,v):
+                        comp.append(st.pop())
+                    comp.append(st.pop())
+                    bcc.append((comp,u))
+            elif v != parent and disc[v] < disc[u]:
+                low[u] = min(low[u], disc[v])
+                st.append((u,v))
+    for i in range(V):
+        if disc[i]==-1:
+            dfs(i,-1)
+    if st:
+        bcc.append((st, None))
+    return bcc, ap
+edges = [(0,1),(1,2),(2,0),(1,3),(3,4)]
+V = 5
+components, articulation_points = biconnected_components(V, edges)
+print("Articulation Points:", articulation_points)
+for i,(comp,ap) in enumerate(components,1):
+    print(f"Component {i}: Edges {comp}, Articulation Point: {ap}")
