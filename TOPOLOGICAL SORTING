@@ -1,0 +1,18 @@
+from collections import defaultdict
+def topo_sort(graph, V):
+    visited, stack = [False]*V, []
+    def dfs(v):
+        visited[v] = True
+        for u in graph[v]:
+            if not visited[u]:
+                dfs(u)
+        stack.append(v)
+    for i in range(V):
+        if not visited[i]:
+            dfs(i)
+    return stack[::-1]
+graph = defaultdict(list)
+edges = [(0,1),(0,2),(1,3),(2,3),(3,4),(4,5)]
+for u,v in edges:
+    graph[u].append(v)
+print("Topological Sort:", topo_sort(graph, 6))
