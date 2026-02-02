@@ -1,0 +1,13 @@
+def fractional_knapsack(wt, val, capacity):
+    ratio = [(val[i]/wt[i], wt[i], val[i]) for i in range(len(wt))]
+    ratio.sort(reverse=True)
+    profit = 0
+    for r, w, v in ratio:
+        if capacity >= w:
+            profit += v
+            capacity -= w
+        else:
+            profit += r * capacity
+            break
+    return profit
+print(fractional_knapsack([10, 40, 20], [60, 40, 100], 50))
